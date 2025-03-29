@@ -71,6 +71,12 @@ def main():
         # Print the final combined markdown to standard output
         print(final_markdown)
         print("\nMarkdown generation complete.") # Added status message
+        
+        # Save final_markdown to a file
+        filename = "output.md"
+        print(f"Saving output file to {filename}")
+        with open(filename, "w") as fd:
+            fd.write(final_markdown)
 
 
     except Exception as e:
