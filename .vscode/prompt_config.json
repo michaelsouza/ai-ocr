@@ -1,0 +1,11 @@
+{
+  "system": "- Ubuntu",
+  "wd": "",
+  "files": [
+    "mistral-ocr.py",
+    "Bitzek06.md"
+  ],
+  "prompts": {
+    "JustChanges": "Do not copy the entire source code. Just give me the changes and explain where should I put it."
+  }
+}
