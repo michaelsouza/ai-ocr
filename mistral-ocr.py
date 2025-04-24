@@ -1,8 +1,8 @@
 import os
 import argparse
+import base64
 from dotenv import load_dotenv
 from mistralai import Mistral
-import base64
 import PyPDF2
 from rich.console import Console
 from rich.panel import Panel
