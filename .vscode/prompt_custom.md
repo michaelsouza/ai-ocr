@@ -1,0 +1,1 @@
+Pls, add a timeout to the Mistral client. The current version just freezes when Mistral is offline.
