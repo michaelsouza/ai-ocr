@@ -119,13 +119,17 @@ def confirm_and_configure_processing(
 ) -> Tuple[bool, bool]:
     """Asks user for confirmation to proceed and Mistral image inclusion preference."""
     proceed = Confirm.ask(
-        f"Do you want to proceed with processing {num_pages} pages of '{pdf_filename}'?"
+        f"Do you want to proceed with processing {num_pages} pages of '{pdf_filename}'? (Y/n)",
+        default=True,
+        show_default=False,
     )
     if not proceed:
         return False, False  # (proceed, include_mistral_images_in_output)
 
     include_mistral_images = Confirm.ask(
-        "For Mistral OCR: Do you want to include images (as base64) in the output and save them locally?"
+        "For Mistral OCR: Do you want to include images (as base64) in the output and save them locally? (y/N)",
+        default=False,
+        show_default=False,
     )
     console.print(
         f"If using Mistral, images will {'[green]be included[/]' if include_mistral_images else '[yellow]not be included[/]'} in the output."
@@ -437,9 +441,10 @@ def process_pdf_with_ollama_fallback(
 
 # --- Common Utility Functions ---
 def generate_output_filename(pdf_path: str) -> str:
-    """Generates the output Markdown filename based on the PDF path."""
+    """Generates the output Markdown filename in the same directory as the PDF."""
+    pdf_dir = os.path.dirname(pdf_path)
     base_name_without_ext, _ = os.path.splitext(os.path.basename(pdf_path))
-    return base_name_without_ext + ".md"
+    return os.path.join(pdf_dir, base_name_without_ext + ".md")
 
 
 def save_markdown_to_file(final_markdown: str, output_filename: str):
@@ -554,8 +559,9 @@ def main():
         ollama_model_name = os.getenv("OLLAMA_MODEL_VISION", "llava")
 
         use_ollama = Confirm.ask(
-            f"Do you want to attempt fallback processing with Ollama (model: [bold cyan]{ollama_model_name}[/bold cyan])?",
+            f"Do you want to attempt fallback processing with Ollama (model: [bold cyan]{ollama_model_name}[/bold cyan])? (Y/n)",
             default=True,
+            show_default=False,
         )
         if use_ollama:
             if ollama is None or convert_from_path is None:
