@@ -1,3 +1,4 @@
+#!/home/michael/gitrepos/ai-ocr/.venv/bin/python
 """Mistral OCR - Convert PDF to Markdown with Ollama Fallback"""
 
 import os
