@@ -1,6 +1,64 @@
 #!/usr/bin/env python3
 """
 Token Counter - Count tokens in text files using tiktoken
+
+This script analyzes text files and directories to count the number of tokens
+they contain using OpenAI's tiktoken library. It's useful for estimating API
+costs, understanding context window usage, and analyzing document sizes for
+LLM applications.
+
+The script processes multiple file formats commonly used with LLMs and provides
+detailed statistics including token counts, character counts, and token-to-character
+ratios. Results are displayed in a formatted table sorted by token count.
+
+Usage:
+    # Count tokens in a single file
+    python count_tokens.py document.txt
+
+    # Count tokens in all text files in a directory (recursive)
+    python count_tokens.py /path/to/project
+
+    # Count tokens in current directory
+    python count_tokens.py .
+
+    # Use a different encoding (e.g., for GPT-3/Codex)
+    python count_tokens.py document.txt -e p50k_base
+
+    # Use GPT-2 encoding
+    python count_tokens.py document.txt -e r50k_base
+
+Supported Encodings:
+    - o200k_base (default)
+    - cl100k_base: GPT-4, GPT-3.5-turbo, text-embedding-ada-002
+    - p50k_base: GPT-3 models (davinci, curie, babbage, ada)
+    - r50k_base: GPT-2, older GPT-3 models
+    - p50k_edit: Older edit models
+
+Supported File Types:
+    Text files: .txt, .md, .log, .csv
+    Code files: .py, .js, .ts, .java, .c, .cpp, .go, .rs, .rb, .php, .sh
+    Config files: .json, .yaml, .yml, .toml, .ini, .cfg
+    Markup files: .xml, .html, .css, .tex, .rst, .org, .adoc, .sql
+
+Features:
+    - Recursive directory scanning
+    - Multiple encoding support for different LLM models
+    - Rich formatted output with color-coded tables
+    - Progress indicator for large file sets
+    - Token/character ratio analysis
+    - Summary statistics with total counts
+    - Files sorted by token count (largest first)
+
+Output:
+    - File path (relative to scan directory)
+    - Token count per file
+    - Character count per file
+    - Token-to-character ratio
+    - Total summary with aggregate statistics
+
+Requirements:
+    - tiktoken: OpenAI's token counting library
+    - rich: Terminal formatting and progress display
 """
 
 import argparse
@@ -25,7 +83,7 @@ TEXT_EXTENSIONS = {
 }
 
 
-def count_tokens(text: str, encoding_name: str = "cl100k_base") -> int:
+def count_tokens(text: str, encoding_name: str = "o200k_base") -> int:
     """Count tokens in text using tiktoken."""
     try:
         encoding = tiktoken.get_encoding(encoding_name)
@@ -165,9 +223,9 @@ Examples:
     parser.add_argument(
         '-e', '--encoding',
         type=str,
-        default='cl100k_base',
-        choices=['cl100k_base', 'p50k_base', 'r50k_base', 'p50k_edit'],
-        help='Tiktoken encoding to use (default: cl100k_base for GPT-4/3.5-turbo)'
+        default='o200k_base',
+        choices=['o200k_base','cl100k_base', 'p50k_base', 'r50k_base', 'p50k_edit'],
+        help='Tiktoken encoding to use (default: o200k_base for gpt-oss/GPT-5)'
     )
 
     args = parser.parse_args()

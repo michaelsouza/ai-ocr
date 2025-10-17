@@ -1,5 +1,95 @@
 #!/usr/bin/env python3
-"""Mistral OCR — Convert PDF to Markdown (Mistral-only)"""
+"""
+PDF to Markdown Converter using Mistral OCR
+
+This script converts PDF documents to Markdown format using Mistral's OCR API.
+It uploads PDFs to Mistral's cloud service, processes them with their latest OCR
+model (mistral-ocr-latest), and extracts text content while preserving document
+structure including headers, lists, tables, and formatting.
+
+The script provides an interactive terminal experience with progress tracking,
+confirmation prompts, and formatted output. It can also extract and save images
+from the PDF with automatic link rewriting in the generated markdown.
+
+Usage:
+    # Basic conversion (interactive mode)
+    python pdf2md.py document.pdf
+
+    # Non-interactive mode (auto-confirm all prompts)
+    python pdf2md.py document.pdf -y
+
+    # Include images from PDF (saved to disk with relative links)
+    python pdf2md.py document.pdf --include-images
+
+    # Specify custom output path
+    python pdf2md.py document.pdf -o output/result.md
+
+    # Non-interactive with images and custom output
+    python pdf2md.py document.pdf -y --include-images -o result.md
+
+    # Skip markdown preview after processing
+    python pdf2md.py document.pdf --no-preview
+
+Options:
+    pdf_path             Path to the PDF file to convert (required)
+    -y, --yes            Non-interactive mode - assume Yes to all prompts
+    --include-images     Extract images from PDF, save to disk, and rewrite markdown links
+    -o, --output PATH    Custom output file path (default: same location as PDF with .md extension)
+    --no-preview         Skip the markdown preview display after processing
+
+Environment Setup:
+    This script requires a Mistral API key set in the environment:
+
+    1. Create a .env file in the project directory:
+       echo "MISTRAL_API_KEY=your_api_key_here" > .env
+
+    2. Or export the environment variable:
+       export MISTRAL_API_KEY="your_api_key_here"
+
+    Get your API key from: https://console.mistral.ai/
+
+Features:
+    - PDF upload to Mistral's secure cloud service
+    - High-quality OCR using mistral-ocr-latest model
+    - Preserves document structure (headers, paragraphs, lists, tables)
+    - Optional image extraction with base64 decoding
+    - Automatic relative path rewriting for image links
+    - Rich terminal UI with progress bars and spinners
+    - Interactive confirmation prompts (can be disabled)
+    - Markdown syntax highlighting in preview
+    - Error handling with descriptive messages
+
+Output:
+    - Markdown file saved alongside PDF (or custom location)
+    - Images saved to {pdf_name}_images/ directory (if --include-images)
+    - Console preview showing first 500 characters
+    - Processing summary with file locations
+
+Image Handling:
+    When --include-images is enabled:
+    - Images are extracted from Mistral OCR response (base64 encoded)
+    - Saved to disk as {pdf_name}_images/{image_id}.{ext}
+    - Markdown image links automatically rewritten to relative paths
+    - Supports: PNG, JPEG, GIF, WebP, BMP, TIFF formats
+
+Requirements:
+    - mistralai: Mistral AI Python SDK
+    - python-dotenv: Environment variable management
+    - PyPDF2: PDF metadata reading
+    - rich: Terminal formatting and UI components
+
+Exit Codes:
+    0: Success
+    1: Processing error (file not found, upload failed, OCR failed)
+    2: Configuration error (invalid arguments, missing API key)
+
+Notes:
+    - PDF files are temporarily uploaded to Mistral's servers for processing
+    - Signed URLs expire after 1 minute for security
+    - Large PDFs may take longer to process
+    - Requires active internet connection
+    - API usage may incur costs based on Mistral's pricing
+"""
 
 import os
 import argparse
