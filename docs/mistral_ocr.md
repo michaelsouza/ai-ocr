@@ -18,9 +18,7 @@ Mistral Document AI API comes with a Document OCR (Optical Character Recognition
 
 The OCR processor returns the extracted text content, images bboxes and metadata about the document structure, making it easy to work with the recognized content programmatically.
 
----
-
-```
+```python
 import os
 from mistralai import Mistral
 api_key = os.environ["MISTRAL_API_KEY"]
@@ -37,7 +35,7 @@ ocr_response = client.ocr.process(
 
 Or passing a Base64 encoded pdf:
 
-```
+```python
 import base64
 import os
 from mistralai import Mistral
@@ -64,13 +62,11 @@ ocr_response = client.ocr.process(
         "type": "document_url",
         "document_url": f"data:application/pdf;base64,{base64_pdf}"
     },
-```
 
----
-
-include_image_base64=True )
-
+    include_image_base64=True
+)
 # Example output: 
+```
 
 ## OCR with uploaded PDF
 
@@ -80,98 +76,108 @@ You can also upload a PDF file and get the OCR results from the uploaded PDF.
 
 ## python typescript curl
 
+```python
 from mistralai import Mistral
 import os
 api_key = os.environ["MISTRAL_API_KEY"]
 client = Mistral(api_key=api_key)
 uploaded_pdf = client.files.upload(
-file $=\square$
-"file_name": "uploaded_file.pdf",
-"content": open("uploaded_file.pdf", "rb"),
-\},
-purpose="ocr"
+    file={
+        "file_name": "uploaded_file.pdf",
+        "content": open("uploaded_file.pdf", "rb"),
+    },
+    purpose="ocr"
 )
+```
 
 ## Retrieve File
 
 ## python typescript curl
 
+```python
 retrieved_file = client.files.retrieve(file_id=uploaded_pdf.id)
 id='00edaf84-95b0-45db-8f83-f71138491f23' object='file' size_bytes=3749788
 created_at=1741023462 filename='uploaded_file.pdf' purpose='ocr'
 sample_type='ocr_input' source='upload' deleted=False num_lines=None
+```
 
 ## Get signed URL
 
 ## python typescript curl
 
----
-
-# Get OCR results 
+# Get OCR results
 
 python typescript curl
+```python
 import os
 from mistralai import Mistral
+
 api_key = os.environ["MISTRAL_API_KEY"]
 client = Mistral(api_key=api_key)
 ocr_response = client.ocr.process(
-model="mistral-ocr-latest",
-document= $\square$
-"type": "document_url",
-"document_url": signed_url.url,
-\},
-include_image_base64=True
+    model="mistral-ocr-latest",
+    document= {
+        "type": "document_url",
+        "document_url": signed_url.url,
+    },
+    include_image_base64=True
 )
+```
 
 ## OCR with image
 
 ## python typescript curl
 
+```python
 import os
 from mistralai import Mistral
 api_key = os.environ["MISTRAL_API_KEY"]
 client = Mistral(api_key=api_key)
 ocr_response = client.ocr.process(
 model="mistral-ocr-latest",
-document= $\square$
+document= {
 "type": "image_url",
 "image_url":
-"https://raw.githubusercontent.com/mistralai/cookbook/refs/heads/main/mistral/ocr/receipt. \},
+"https://raw.githubusercontent.com/mistralai/cookbook/refs/heads/main/mistral/ocr/receipt.jpg"
+},
 include_image_base64=True
 )
+```
 
 Or passing a Base64 encoded image:
+```python
 import base64
 import os
-
----
-
 from mistralai import Mistral
+
 def encode_image(image_path):
-"""Encode the image to base64."""
-try:
-with open(image_path, "rb") as image_file:
-return base64.b64encode(image_file.read()).decode('utf-8')
-except FileNotFoundError:
-print(f"Error: The file \{image_path\} was not found.")
-return None
-except Exception as e: \# Added general exception handling
-print(f"Error: \{e\}")
-return None
-\# Path to your image
+    """Encode the image to base64."""
+    try:
+        with open(image_path, "rb") as image_file:
+            return base64.b64encode(image_file.read()).decode('utf-8')
+    except FileNotFoundError:
+        print(f"Error: The file {image_path} was not found.")
+        return None
+    except Exception as e:  # Added general exception handling
+        print(f"Error: {e}")
+        return None
+
+# Path to your image
 image_path = "path_to_your_image.jpg"
-\# Getting the base64 string
+# Getting the base64 string
 base64_image = encode_image(image_path)
 api_key = os.environ["MISTRAL_API_KEY"]
 client = Mistral(api_key=api_key)
 ocr_response = client.ocr.process(
-model="mistral-ocr-latest",
-document=\{
-"type": "image_url",
-"image_url": f"data:image/jpeg;base64,\{base64_image\}"
-\},
-include_image_base64=True
+    model="mistral-ocr-latest",
+    document={
+        "type": "image_url",
+        "image_url": f"data:image/jpeg;base64,{base64_image}"
+    },
+    include_image_base64=True
 )
+
+```
 
 # Cookbooks 
 
