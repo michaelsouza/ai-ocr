@@ -39,6 +39,7 @@ Supported File Types:
     Code files: .py, .js, .ts, .java, .c, .cpp, .go, .rs, .rb, .php, .sh
     Config files: .json, .yaml, .yml, .toml, .ini, .cfg
     Markup files: .xml, .html, .css, .tex, .rst, .org, .adoc, .sql
+    AMPL files: .mod
 
 Features:
     - Recursive directory scanning
@@ -79,7 +80,7 @@ TEXT_EXTENSIONS = {
     '.txt', '.md', '.csv', '.json', '.xml', '.html', '.css', '.js', '.ts',
     '.py', '.java', '.c', '.cpp', '.h', '.hpp', '.go', '.rs', '.rb',
     '.php', '.sh', '.bash', '.yaml', '.yml', '.toml', '.ini', '.cfg',
-    '.log', '.tex', '.rst', '.org', '.adoc', '.sql'
+    '.log', '.tex', '.rst', '.org', '.adoc', '.sql', '.mod'
 }
 
 
