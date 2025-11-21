@@ -1,17 +1,6 @@
-# AI CLI Tools Installation Guide
+# AI CLI Tools - Installation & Version Guide
 
-Complete guide for installing and updating the latest versions of Gemini CLI, OpenAI Codex CLI, and Claude Code CLI.
-
----
-
-## Table of Contents
-
-- [Prerequisites](#prerequisites)
-- [Gemini CLI](#gemini-cli)
-- [OpenAI Codex CLI](#openai-codex-cli)
-- [Claude Code CLI](#claude-code-cli)
-- [Updating All Tools](#updating-all-tools)
-- [Troubleshooting](#troubleshooting)
+Complete guide for installing, updating, and tracking versions of Gemini CLI, OpenAI Codex CLI, and Claude Code CLI.
 
 ---
 
@@ -19,316 +8,295 @@ Complete guide for installing and updating the latest versions of Gemini CLI, Op
 
 ### Node.js Requirements
 
-All three CLI tools require **Node.js v20 or higher**. We recommend using **nvm (Node Version Manager)** for managing Node.js versions.
+Each CLI tool has specific Node.js version requirements. Check the official documentation:
+- **Gemini CLI**: [github.com/google-gemini/gemini-cli#requirements](https://github.com/google-gemini/gemini-cli#requirements)
+- **Codex CLI**: [github.com/openai/codex#requirements](https://github.com/openai/codex#requirements)
+- **Claude Code**: [github.com/anthropics/claude-code#requirements](https://github.com/anthropics/claude-code#requirements)
 
-#### Installing nvm
+**General recommendation**: Use the latest Node.js LTS version.
 
-```bash
-# Install nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-
-# Load nvm (or restart your terminal)
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-```
-
-#### Installing Node.js v24 (Latest LTS)
+### Installing Node.js with nvm (recommended)
 
 ```bash
-# Install Node.js LTS
+# Install nvm (check https://github.com/nvm-sh/nvm for latest instructions)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+
+# Or visit: https://github.com/nvm-sh/nvm#installing-and-updating
+
+# Install latest Node.js LTS
 nvm install --lts
+nvm alias default node
 
-# Set as default
-nvm alias default v24
-
-# Verify installation
-node --version  # Should show v24.x.x
-npm --version   # Should show v11.x.x
+# Verify
+node --version
+npm --version
 ```
 
 ---
 
-## Gemini CLI
+## Quick Installation
 
-### About
-Official Google Gemini CLI - An open-source AI agent that brings the power of Gemini directly into your terminal.
-
-### Latest Version
-- **Stable**: v0.16.0 (November 2025)
-- **Features**: Gemini 3 support
-
-### Installation
-
-#### Install Latest Stable
-```bash
-npm install -g @google/gemini-cli@latest
-```
-
-#### Install Preview Version
-```bash
-npm install -g @google/gemini-cli@preview
-```
-
-#### Install Nightly Build
-```bash
-npm install -g @google/gemini-cli@nightly
-```
-
-### Verify Installation
-```bash
-gemini --version
-```
-
-### Release Information
-
-**Release Schedule:**
-- **Stable releases**: Weekly on Tuesdays at 20:00 UTC
-- **Preview releases**: Weekly on Tuesdays at 23:59 UTC
-- **Nightly releases**: Daily at 00:00 UTC
-
-**Resources:**
-- GitHub Repository: https://github.com/google-gemini/gemini-cli
-- Releases Page: https://github.com/google-gemini/gemini-cli/releases
-- npm Package: https://www.npmjs.com/package/@google/gemini-cli
-
-### Update to Latest
-```bash
-npm update -g @google/gemini-cli@latest
-```
-
----
-
-## OpenAI Codex CLI
-
-### About
-OpenAI's official coding agent that runs locally on your computer. Included with ChatGPT Plus, Pro, Business, Edu, and Enterprise plans.
-
-### Latest Version
-- **Stable**: v0.60.1 (November 19, 2025)
-- **Features**: GPT-5.1-Codex-Max model, native compaction support
-
-### Installation
-
-#### Install via npm (Recommended)
-```bash
-npm install -g @openai/codex@latest
-```
-
-#### Install via Homebrew (macOS/Linux)
-```bash
-brew install --cask codex
-```
-
-### Verify Installation
-```bash
-codex --version
-```
-
-### Configuration
-Configuration is stored in `~/.codex/config.toml`
-
-### Default Model
-- **GPT-5.1-Codex-Max**: Frontier agentic coding model
-- Alternative models: gpt-5.1-codex, gpt-5.1-codex-mini
-
-**Resources:**
-- GitHub Repository: https://github.com/openai/codex
-- Releases Page: https://github.com/openai/codex/releases
-- npm Package: https://www.npmjs.com/package/@openai/codex
-- Official Docs: https://developers.openai.com/codex/cli
-- Changelog: https://developers.openai.com/codex/changelog/
-
-### Update to Latest
-```bash
-npm update -g @openai/codex@latest
-```
-
----
-
-## Claude Code CLI
-
-### About
-Anthropic's official CLI for Claude - An agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster.
-
-### Latest Version
-- **Stable**: v2.0.47 (November 20, 2025)
-- **Features**: Azure AI Foundry support, PermissionRequest hooks, improved teleport functionality
-
-### Installation
-
-```bash
-npm install -g @anthropic-ai/claude-code@latest
-```
-
-### Verify Installation
-```bash
-claude --version
-```
-
-### Key Features (2025)
-- Automatic checkpoint system (saves code state before changes)
-- Subagents, hooks, and background tasks
-- MCP "project" scope for repository-level MCP servers
-- Thinking mode (`think` or `think harder`)
-- Claude Sonnet 4.5 as default model
-
-**Resources:**
-- GitHub Repository: https://github.com/anthropics/claude-code
-- CHANGELOG: https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md
-- npm Package: https://www.npmjs.com/package/@anthropic-ai/claude-code
-- Detailed Changelog: https://claudelog.com/claude-code-changelog/
-
-### Update to Latest
-```bash
-npm update -g @anthropic-ai/claude-code@latest
-```
-
----
-
-## Updating All Tools
-
-### Update All at Once
+### Install All Three Tools
 ```bash
 npm install -g @google/gemini-cli@latest @openai/codex@latest @anthropic-ai/claude-code@latest
 ```
 
-### Check All Versions
+### Verify Installations
 ```bash
-echo "Node.js: $(node --version)"
-echo "npm: $(npm --version)"
-echo "Gemini CLI: $(gemini --version)"
-echo "Codex CLI: $(codex --version)"
-echo "Claude Code: $(claude --version)"
+gemini --version
+codex --version
+claude --version
 ```
 
-### List All Global Packages
+---
+
+## Individual Tool Details
+
+### Gemini CLI (Google)
 ```bash
-npm list -g --depth=0
+# Install latest
+npm install -g @google/gemini-cli@latest
+
+# Check current version
+gemini --version
+npm view @google/gemini-cli version
+```
+
+**Where to Find Version Information:**
+- **GitHub Releases**: [github.com/google-gemini/gemini-cli/releases](https://github.com/google-gemini/gemini-cli/releases) - Latest stable, preview, and nightly releases
+- **npm Package**: [npmjs.com/package/@google/gemini-cli](https://www.npmjs.com/package/@google/gemini-cli) - Current published version
+- **Documentation**: [google-gemini.github.io/gemini-cli](https://google-gemini.github.io/gemini-cli/) - Official docs and changelog
+
+**Release Channels:**
+- `@latest` - Stable releases (Weekly Tuesdays 20:00 UTC)
+- `@preview` - Preview releases (Weekly Tuesdays 23:59 UTC)
+- `@nightly` - Nightly builds (Daily 00:00 UTC)
+
+---
+
+### OpenAI Codex CLI
+```bash
+# Install latest
+npm install -g @openai/codex@latest
+
+# Check current version
+codex --version
+npm view @openai/codex version
+```
+
+**Where to Find Version Information:**
+- **GitHub Releases**: [github.com/openai/codex/releases](https://github.com/openai/codex/releases) - Official release announcements and notes
+- **npm Package**: [npmjs.com/package/@openai/codex](https://www.npmjs.com/package/@openai/codex) - Current version and stats
+- **Official Changelog**: [developers.openai.com/codex/changelog](https://developers.openai.com/codex/changelog/) - Detailed version history
+- **Documentation**: [developers.openai.com/codex/cli](https://developers.openai.com/codex/cli) - Installation and usage guides
+
+---
+
+### Claude Code CLI (Anthropic)
+```bash
+# Install latest
+npm install -g @anthropic-ai/claude-code@latest
+
+# Check current version
+claude --version
+npm view @anthropic-ai/claude-code version
+```
+
+**Where to Find Version Information:**
+- **CHANGELOG.md**: [github.com/anthropics/claude-code/blob/main/CHANGELOG.md](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) - **Primary source** (no GitHub Releases)
+- **npm Package**: [npmjs.com/package/@anthropic-ai/claude-code](https://www.npmjs.com/package/@anthropic-ai/claude-code) - Current version
+- **Third-party**: [claudelog.com/claude-code-changelog](https://claudelog.com/claude-code-changelog/) - User-friendly changelog viewer
+
+**Note**: Anthropic uses CHANGELOG.md instead of GitHub Releases for version tracking.
+
+---
+
+## Version Management
+
+### Check Current Versions
+```bash
+# Check installed versions
+gemini --version
+codex --version
+claude --version
+
+# Check latest available on npm
+npm view @google/gemini-cli version
+npm view @openai/codex version
+npm view @anthropic-ai/claude-code version
+
+# Check if updates are available
+npm outdated -g @google/gemini-cli @openai/codex @anthropic-ai/claude-code
+```
+
+### Update Tools
+```bash
+# Update all to latest
+npm update -g @google/gemini-cli @openai/codex @anthropic-ai/claude-code
+
+# Or update individually
+npm update -g @google/gemini-cli
+npm update -g @openai/codex
+npm update -g @anthropic-ai/claude-code
+
+# Force reinstall latest version
+npm install -g @google/gemini-cli@latest
+npm install -g @openai/codex@latest
+npm install -g @anthropic-ai/claude-code@latest
+```
+
+### Check Detailed Package Info
+```bash
+# See full package metadata (version, publish date, dependencies)
+npm view @google/gemini-cli
+npm view @openai/codex
+npm view @anthropic-ai/claude-code
+```
+
+---
+
+## Staying Updated
+
+### GitHub Notifications
+
+Watch repositories for new releases:
+1. Visit the repository
+2. Click "Watch" → "Custom" → Check "Releases"
+3. Get notified when new versions are published
+
+- [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli)
+- [openai/codex](https://github.com/openai/codex)
+- [anthropics/claude-code](https://github.com/anthropics/claude-code)
+
+### RSS Feeds
+
+Subscribe to release feeds in your RSS reader:
+```
+Gemini:  https://github.com/google-gemini/gemini-cli/releases.atom
+Codex:   https://github.com/openai/codex/releases.atom
+Claude:  https://github.com/anthropics/claude-code/commits/main.atom
+```
+
+### Automated Version Checks
+
+Create a script to check for updates:
+```bash
+#!/bin/bash
+# check-cli-updates.sh
+
+echo "=== Installed Versions ==="
+echo "Gemini: $(gemini --version 2>&1 | head -1)"
+echo "Codex:  $(codex --version 2>&1 | head -1)"
+echo "Claude: $(claude --version 2>&1 | head -1)"
+echo ""
+echo "=== Latest on npm ==="
+echo "Gemini: $(npm view @google/gemini-cli version)"
+echo "Codex:  $(npm view @openai/codex version)"
+echo "Claude: $(npm view @anthropic-ai/claude-code version)"
+echo ""
+echo "=== Checking for updates ==="
+npm outdated -g @google/gemini-cli @openai/codex @anthropic-ai/claude-code
 ```
 
 ---
 
 ## Troubleshooting
 
-### Common Issues
+### Node.js version too old
 
-#### 1. "Invalid regular expression flags" or SyntaxError
-
-**Problem**: Node.js version is too old (< v20)
+**Symptom**: "Invalid regular expression flags" or SyntaxError
 
 **Solution**:
 ```bash
-# Install Node.js v24
+# Update to latest Node.js LTS
 nvm install --lts
-nvm use --delete-prefix v24
-nvm alias default v24
+nvm use --lts
+nvm alias default node
 
 # Reinstall CLI tools
 npm install -g @google/gemini-cli@latest @openai/codex@latest @anthropic-ai/claude-code@latest
 ```
 
-#### 2. npm prefix/globalconfig conflicts with nvm
+### Command not found after installation
 
-**Problem**: `.npmrc` file has incompatible settings
-
-**Solution**:
-```bash
-nvm use --delete-prefix v24
-```
-
-#### 3. Command not found after installation
-
-**Problem**: npm global bin directory not in PATH
+**Symptom**: `command not found: gemini` (or codex/claude)
 
 **Solution**:
 ```bash
-# Find npm global bin directory
+# Check npm global bin directory
 npm config get prefix
 
-# Add to PATH (add to ~/.bashrc or ~/.zshrc)
+# Add to PATH in ~/.bashrc or ~/.zshrc
 export PATH="$PATH:$(npm config get prefix)/bin"
+
+# Reload shell configuration
+source ~/.bashrc  # or source ~/.zshrc
 ```
 
-#### 4. Permission errors during installation
+### Permission errors during installation
 
-**Problem**: Installing globally without proper permissions
+**Best solution**: Use nvm instead of system Node.js
 
-**Solution**:
-Use nvm (recommended) instead of system Node.js, or:
+**Alternative**:
 ```bash
-# Use npm with --unsafe-perm flag (not recommended)
-npm install -g @google/gemini-cli@latest --unsafe-perm
-
-# Better: Configure npm to use different directory
+# Configure npm to use user directory
 mkdir ~/.npm-global
 npm config set prefix '~/.npm-global'
-echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
+
+# Add to PATH in ~/.bashrc or ~/.zshrc
+export PATH="~/.npm-global/bin:$PATH"
+
+# Reload and reinstall
 source ~/.bashrc
+npm install -g @google/gemini-cli@latest @openai/codex@latest @anthropic-ai/claude-code@latest
 ```
 
----
+### npm prefix conflicts with nvm
 
-## Version Comparison Table
-
-| CLI Tool | Latest Stable | Released | Key Feature |
-|----------|---------------|----------|-------------|
-| Gemini CLI | v0.16.0 | Nov 2025 | Gemini 3 support |
-| Codex CLI | v0.60.1 | Nov 19, 2025 | GPT-5.1-Codex-Max |
-| Claude Code | v2.0.47 | Nov 20, 2025 | Checkpoints & Hooks |
+**Solution**:
+```bash
+nvm use --delete-prefix node
+```
 
 ---
 
 ## Quick Reference
 
-### Installation Commands
+### Package Names
+| Tool | npm Package | Primary Version Source |
+|------|-------------|------------------------|
+| **Gemini CLI** | `@google/gemini-cli` | [GitHub Releases](https://github.com/google-gemini/gemini-cli/releases) |
+| **Codex CLI** | `@openai/codex` | [GitHub Releases](https://github.com/openai/codex/releases) |
+| **Claude Code** | `@anthropic-ai/claude-code` | [CHANGELOG.md](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) |
+
+### Essential Commands
 ```bash
-# Install all three
+# Install all
 npm install -g @google/gemini-cli@latest @openai/codex@latest @anthropic-ai/claude-code@latest
 
-# Or individually
-npm install -g @google/gemini-cli@latest
-npm install -g @openai/codex@latest
-npm install -g @anthropic-ai/claude-code@latest
-```
-
-### Update Commands
-```bash
 # Update all
 npm update -g @google/gemini-cli @openai/codex @anthropic-ai/claude-code
 
-# Or individually
-npm update -g @google/gemini-cli
-npm update -g @openai/codex
-npm update -g @anthropic-ai/claude-code
-```
+# Check versions
+gemini --version && codex --version && claude --version
 
-### Uninstall Commands
-```bash
+# Check for updates
+npm outdated -g
+
 # Uninstall all
 npm uninstall -g @google/gemini-cli @openai/codex @anthropic-ai/claude-code
-
-# Or individually
-npm uninstall -g @google/gemini-cli
-npm uninstall -g @openai/codex
-npm uninstall -g @anthropic-ai/claude-code
 ```
 
 ---
 
 ## Additional Resources
 
-### Learning & Documentation
-- **Gemini CLI Docs**: https://google-gemini.github.io/gemini-cli/
-- **Codex CLI Docs**: https://developers.openai.com/codex/cli
-- **Claude Code Docs**: https://platform.claude.com/docs/en/release-notes/claude-code
+### Official Documentation
+- **Gemini CLI**: [google-gemini.github.io/gemini-cli](https://google-gemini.github.io/gemini-cli/)
+- **Codex CLI**: [developers.openai.com/codex/cli](https://developers.openai.com/codex/cli)
+- **Claude Code**: [github.com/anthropics/claude-code](https://github.com/anthropics/claude-code)
 
-### Community & Support
-- **Gemini CLI Issues**: https://github.com/google-gemini/gemini-cli/issues
-- **Codex CLI Issues**: https://github.com/openai/codex/issues
-- **Claude Code Issues**: https://github.com/anthropics/claude-code/issues
-
----
-
-**Last Updated**: November 20, 2025
-
-**Note**: Version numbers and features are current as of the last update date. Always check the official repositories and npm packages for the most current information.
+### Issue Trackers
+- **Gemini CLI**: [github.com/google-gemini/gemini-cli/issues](https://github.com/google-gemini/gemini-cli/issues)
+- **Codex CLI**: [github.com/openai/codex/issues](https://github.com/openai/codex/issues)
+- **Claude Code**: [github.com/anthropics/claude-code/issues](https://github.com/anthropics/claude-code/issues)
