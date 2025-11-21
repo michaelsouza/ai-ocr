@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Generates a flowchart from a Python script by analyzing its function calls.
-The output is in Graphviz DOT format.
+Generates a flowchart from Python, C, or C++ source files by analyzing function calls.
+The output is in Graphviz DOT format (JSON, PNG, and SVG).
 """
 
 import ast
@@ -11,6 +11,13 @@ from pathlib import Path
 import subprocess
 from datetime import datetime
 import json
+try:
+    from tree_sitter import Language, Parser
+    import tree_sitter_c as ts_c
+    import tree_sitter_cpp as ts_cpp
+    TREE_SITTER_AVAILABLE = True
+except ImportError:
+    TREE_SITTER_AVAILABLE = False
 
 class FunctionCallVisitor(ast.NodeVisitor):
     """
@@ -93,6 +100,143 @@ def filter_graph(graph, defined_functions):
                 filtered_graph[caller].extend(filtered_callees)
     return filtered_graph
 
+class CCppAnalyzer:
+    """
+    Analyzer for C/C++ code using tree-sitter to build a function call graph.
+    """
+    def __init__(self, language='c'):
+        if not TREE_SITTER_AVAILABLE:
+            raise ImportError("tree-sitter packages not available. Install with: pip install tree-sitter tree-sitter-c tree-sitter-cpp")
+
+        self.language = language
+        self.parser = Parser()
+        if language == 'cpp':
+            self.parser.set_language(Language(ts_cpp.language(), 'cpp'))
+        else:
+            self.parser.set_language(Language(ts_c.language(), 'c'))
+
+        self.graph = {}
+        self.defined_functions = set()
+
+    def analyze(self, code):
+        """Analyzes C/C++ code and builds a call graph."""
+        tree = self.parser.parse(bytes(code, 'utf8'))
+        root_node = tree.root_node
+
+        # Find all function definitions
+        self._find_function_definitions(root_node)
+
+        # Build call graph
+        self._build_call_graph(root_node)
+
+        return self.graph, self.defined_functions
+
+    def _find_function_definitions(self, node):
+        """Recursively find all function definitions."""
+        if node.type == 'function_definition':
+            func_name = self._get_function_name(node)
+            if func_name:
+                self.defined_functions.add(func_name)
+                if func_name not in self.graph:
+                    self.graph[func_name] = []
+
+        for child in node.children:
+            self._find_function_definitions(child)
+
+    def _get_function_name(self, func_def_node):
+        """Extract function name from a function_definition node."""
+        declarator = func_def_node.child_by_field_name('declarator')
+        if not declarator:
+            return None
+
+        # Handle different declarator types
+        while declarator:
+            if declarator.type == 'function_declarator':
+                declarator = declarator.child_by_field_name('declarator')
+            elif declarator.type == 'pointer_declarator':
+                declarator = declarator.child_by_field_name('declarator')
+            elif declarator.type == 'identifier':
+                return declarator.text.decode('utf8')
+            else:
+                # Try to find identifier in children
+                for child in declarator.children:
+                    if child.type == 'identifier':
+                        return child.text.decode('utf8')
+                break
+
+        return None
+
+    def _build_call_graph(self, node):
+        """Build the call graph by finding function calls within each function."""
+        if node.type == 'function_definition':
+            func_name = self._get_function_name(node)
+            if func_name:
+                self._find_calls_in_function(node, func_name)
+
+        for child in node.children:
+            self._build_call_graph(child)
+
+    def _find_calls_in_function(self, func_node, caller_name):
+        """Find all function calls within a function."""
+        body = func_node.child_by_field_name('body')
+        if body:
+            self._extract_calls(body, caller_name)
+
+    def _extract_calls(self, node, caller_name):
+        """Recursively extract function calls from a node."""
+        if node.type == 'call_expression':
+            function_node = node.child_by_field_name('function')
+            if function_node:
+                callee_name = self._get_call_name(function_node)
+                if callee_name and caller_name in self.graph:
+                    self.graph[caller_name].append(callee_name)
+
+        for child in node.children:
+            self._extract_calls(child, caller_name)
+
+    def _get_call_name(self, func_node):
+        """Extract the name of a called function."""
+        if func_node.type == 'identifier':
+            return func_node.text.decode('utf8')
+        elif func_node.type == 'field_expression':
+            field = func_node.child_by_field_name('field')
+            if field and field.type == 'field_identifier':
+                return field.text.decode('utf8')
+        elif func_node.type == 'qualified_identifier' or func_node.type == 'scoped_identifier':
+            # For C++ qualified names like std::cout
+            name = func_node.child_by_field_name('name')
+            if name:
+                return name.text.decode('utf8')
+
+        return None
+
+def analyze_c_cpp_code(file_path, language='c'):
+    """
+    Reads and analyzes C/C++ code to build a function call graph.
+    """
+    with open(file_path, 'r', encoding='utf-8') as f:
+        code = f.read()
+
+    analyzer = CCppAnalyzer(language)
+    graph, defined_functions = analyzer.analyze(code)
+
+    return graph, defined_functions
+
+def detect_language(file_path):
+    """
+    Detects the programming language based on file extension.
+    Returns 'python', 'c', or 'cpp'.
+    """
+    suffix = file_path.suffix.lower()
+    if suffix == '.py':
+        return 'python'
+    elif suffix in ['.c', '.h']:
+        return 'c'
+    elif suffix in ['.cpp', '.cc', '.cxx', '.hpp', '.hh', '.hxx']:
+        return 'cpp'
+    else:
+        return None
+
 def generate_dot_graph(graph, script_name):
     """
     Generates a Graphviz DOT representation of the call graph.
@@ -124,10 +268,10 @@ def main():
     Main function to parse arguments and run the analysis.
     """
     parser = argparse.ArgumentParser(
-        description="Generate a flowchart JSON, PNG, and SVG from a Python script.",
+        description="Generate a flowchart JSON, PNG, and SVG from Python, C, or C++ source files.",
         formatter_class=argparse.RawTextHelpFormatter
     )
-    parser.add_argument("python_file", help="Path to the Python script to analyze.")
+    parser.add_argument("source_file", help="Path to the source file to analyze (Python, C, or C++).")
     parser.add_argument(
         "--no-images",
         action="store_true",
@@ -140,10 +284,27 @@ def main():
     )
     args = parser.parse_args()
 
-    script_path = Path(args.python_file)
+    script_path = Path(args.source_file)
+
+    # Detect language
+    language = detect_language(script_path)
+    if language is None:
+        print(f"Error: Unsupported file extension '{script_path.suffix}'. Supported: .py, .c, .h, .cpp, .cc, .cxx, .hpp, .hh, .hxx", file=sys.stderr)
+        sys.exit(1)
 
     try:
-        full_graph, defined_functions = analyze_code(script_path)
+        # Analyze code based on language
+        if language == 'python':
+            full_graph, defined_functions = analyze_code(script_path)
+        elif language in ['c', 'cpp']:
+            if not TREE_SITTER_AVAILABLE:
+                print("Error: tree-sitter packages are required for C/C++ analysis.", file=sys.stderr)
+                print("Install with: pip install tree-sitter tree-sitter-c tree-sitter-cpp", file=sys.stderr)
+                sys.exit(1)
+            full_graph, defined_functions = analyze_c_cpp_code(script_path, language)
+        else:
+            print(f"Error: Unsupported language '{language}'", file=sys.stderr)
+            sys.exit(1)
         graph = filter_graph(full_graph, defined_functions)
 
         timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
